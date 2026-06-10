@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Laney Scratch</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="scratch.css" rel="stylesheet">   
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    
+    <body>        
+   <header> 
+       <div class="header-container">
+           <a href="index.html" >
+           <h1>Laney Dayton</h1>
+        </a>
+            <nav>
+                <ul>
+                    <li><a href="My%20website/resume.html" target="_blank">Resume</a></li>
+                    <li><a href="My%20website/js/webapp.html" target="_blank">Wordle</a></li>
+                    <li><a href="#video-section">Video</a></li>
+                </ul>
+            </nav> 
+        </div>
+    </header>
+        
+        <div>
+           <h2>Hello. My name is Laney. A hobby that I have enjoyed since I was a kid is wakeboarding.</h2>
+       </div>
+
+    <div class="flex-container">
+  <div class="flex-item"><img src="My%20website/assets/img/laneywakeboard.jpg" alt="Image 1"></div>
+  <div class="flex-item"><img src="My%20website/assets/img/boat.jpg" alt="Image 2"></div>
+
+
+</div>
+      
+<div class="about-me">
+  <ul>
+    <li>I started wakeboarding when I was 8.</li>
+    <li>My skills have improved each time I am behind the boat.</li>
+    <li>Some of my skills include:
+        <ol>
+            <li>Jumping the wake</li>
+            <li>Fakie</li>
+            <li>Carving</li>
+        </ol>
+    </li>
+</ul>
+</div>
+        
+<main id="video-section">          
+
+<h3>This is a video of Shaun Murray. He is a wakeboarder I look up to and watch often to learn new skills.</h3>
+
+<iframe width="840" height="473" src="https://www.youtube.com/embed/n3VUvs0yL7Y" 
+        title="Wakeboarding Highlights"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen
+
+></iframe>
+
+<br>
+<br>
+<p style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
+  This is 'Sports Rank by Stats' tableau graph
+</p>
+<br>
+
+<div class="tableauContainer" style="width: 100%; max-width: 1100px; margin: 0 auto; height: 700px;">
+  <iframe 
+    src="https://public.tableau.com/views/SportsRankbyStats/MEASUREANALYSIS?:showVizHome=no&:embed=true" 
+    style="border: none; width: 100%; height: 100%;" 
+    title="Sports Rank by Stats Tableau Dashboard">
+  </iframe>
+</div>
+
+<script>
+  var divElement = document.getElementById('viz1781119923797');
+  var vizElement = divElement.getElementsByTagName('object')[0];
+  vizElement.style.width = '100%';
+  vizElement.style.height = '700px';
+  
+  var scriptElement = document.createElement('script');
+  scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+  vizElement.parentNode.insertBefore(scriptElement, vizElement);
+</script>
+
+    </main>
+</body>
+</html>
