@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cougar Wordle - IS201 Web App</title>
+    <style>
+        :root {
+            --byu-blue: #002e5d;
+            --byu-tan: #ffffff;
+            --correct-green: #6aaa64;
+            --present-yellow: #c9b458;
+            --absent-gray: #787c7e;
+            --border-gray: #d3d6da;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fafafa;
+            color: #333;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            background-color: var(--byu-blue);
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+            letter-spacing: 2px;
+        }
+
+        header p {
+            margin: 5px 0 0 0;
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        #game-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #board {
+            display: grid;
+            grid-template-rows: repeat(6, 1fr);
+            grid-gap: 5px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-gap: 5px;
+        }
+
+        .tile {
+            width: 52px;
+            height: 52px;
+            border: 2px solid var(--border-gray);
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-transform: uppercase;
+            user-select: none;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        /* Status Styles */
+        .tile.correct {
+            background-color: var(--correct-green);
+            color: white;
+            border-color: var(--correct-green);
+        }
+        .tile.present {
+            background-color: var(--present-yellow);
+            color: white;
+            border-color: var(--present-yellow);
+        }
+        .tile.absent {
+            background-color: var(--absent-gray);
+            color: white;
+            border-color: var(--absent-gray);
+        }
+        .tile.pop {
+            border-color: #565758;
+            transform: scale(1.05);
+        }
+
+        #message {
+            height: 30px;
+            font-weight: bold;
+            color: var(--byu-blue);
+            margin-bottom: 10px;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        #keyboard {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            width: 100%;
+        }
+
+        .key {
+            background-color: #e5e5e5;
+            border: 0;
+            border-radius: 4px;
+            height: 48px;
+            font-weight: bold;
+            font-size: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            flex: 1;
+            text-transform: uppercase;
+        }
+
+        .key.wide {
+            flex: 1.5;
+            font-size: 12px;
+        }
+
+        /* Keyboard key colors updated dynamically via JS */
+        .key.correct { background-color: var(--correct-green); color: white; }
+        .key.present { background-color: var(--present-yellow); color: white; }
+        .key.absent { background-color: var(--absent-gray); color: white; }
+
+        footer {
+            margin-top: auto;
+            padding: 15px;
+            font-size: 12px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>COUGAR WORDLE</h1>
+        <p>IS201 AI-Collaborative Web App</p>
+    </header>
+
+    <div id="game-container">
+        <div id="message">Guess the 5-letter campus word!</div>
+        
+        <div id="board"></div>
+
+        <div id="keyboard">
+            <div class="keyboard-row">
+                <button class="key" data-key="q">q</button>
+                <button class="key" data-key="w">w</button>
+                <button class="key" data-key="e">e</button>
+                <button class="key" data-key="r">r</button>
+                <button class="key" data-key="t">t</button>
+                <button class="key" data-key="y">y</button>
+                <button class="key" data-key="u">u</button>
+                <button class="key" data-key="i">i</button>
+                <button class="key" data-key="o">o</button>
+                <button class="key" data-key="p">p</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="key" data-key="a">a</button>
+                <button class="key" data-key="s">s</button>
+                <button class="key" data-key="d">d</button>
+                <button class="key" data-key="f">f</button>
+                <button class="key" data-key="g">g</button>
+                <button class="key" data-key="h">h</button>
+                <button class="key" data-key="j">j</button>
+                <button class="key" data-key="k">k</button>
+                <button class="key" data-key="l">l</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="key wide" data-key="enter">ENTER</button>
+                <button class="key" data-key="z">z</button>
+                <button class="key" data-key="x">x</button>
+                <button class="key" data-key="c">c</button>
+                <button class="key" data-key="v">v</button>
+                <button class="key" data-key="b">b</button>
+                <button class="key" data-key="n">n</button>
+                <button class="key" data-key="m">m</button>
+                <button class="key wide" data-key="backspace">BACK</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        Built in collaboration with AI for IS201
+    </footer>
+
+    <script>
+        // BYU-themed 5-letter hidden words
+        const WORDS = ["cosmo", "provo", "ylight", "brick", "study", "exams", "books", "coach", "honor", "final", "cougs", "fudge", "cream"];
+        // Pick a random word from the list
+        const secretWord = WORDS[Math.floor(Math.random() * WORDS.length)];
+        
+        const MAX_GUESSES = 6;
+        const WORD_LENGTH = 5;
+        
+        let currentRow = 0;
+        let currentTile = 0;
+        let guesses = Array(MAX_GUESSES).fill("").map(() => Array(WORD_LENGTH).fill(""));
+        let gameOver = false;
+
+        // Create the board tiles programmatically
+        const board = document.getElementById("board");
+        for (let i = 0; i < MAX_GUESSES; i++) {
+            const rowDiv = document.createElement("div");
+            rowDiv.className = "row";
+            for (let j = 0; j < WORD_LENGTH; j++) {
+                const tileDiv = document.createElement("div");
+                tileDiv.className = "tile";
+                tileDiv.id = `tile-${i}-${j}`;
+                rowDiv.appendChild(tileDiv);
+            }
+            board.appendChild(rowDiv);
+        }
+
+        // Handle physical keyboard inputs
+        document.addEventListener("keydown", (e) => {
+            if (gameOver) return;
+            if (e.key === "Enter") {
+                submitGuess();
+            } else if (e.key === "Backspace") {
+                deleteLetter();
+            } else if (/^[a-zA-Z]$/.test(e.key)) {
+                addLetter(e.key.toLowerCase());
+            }
+        });
+
+        // Handle on-screen virtual keyboard clicks
+        document.querySelectorAll(".key").forEach(button => {
+            button.addEventListener("click", () => {
+                if (gameOver) return;
+                const key = button.getAttribute("data-key");
+                if (key === "enter") {
+                    submitGuess();
+                } else if (key === "backspace") {
+                    deleteLetter();
+                } else {
+                    addLetter(key);
+                }
+            });
+        });
+
+        function addLetter(letter) {
+            if (currentTile < WORD_LENGTH && currentRow < MAX_GUESSES) {
+                guesses[currentRow][currentTile] = letter;
+                const tile = document.getElementById(`tile-${currentRow}-${currentTile}`);
+                tile.textContent = letter;
+                tile.classList.add("pop");
+                currentTile++;
+            }
+        }
+
+        function deleteLetter() {
+            if (currentTile > 0) {
+                currentTile--;
+                guesses[currentRow][currentTile] = "";
+                const tile = document.getElementById(`tile-${currentRow}-${currentTile}`);
+                tile.textContent = "";
+                tile.classList.remove("pop");
+            }
+        }
+
+        function submitGuess() {
+            if (currentTile !== WORD_LENGTH) {
+                showMessage("Not enough letters!");
+                return;
+            }
+
+            const guess = guesses[currentRow].join("");
+            revealRow(currentRow, guess);
+
+            if (guess === secretWord) {
+                showMessage("Go Cougars! You win! 🤙");
+                gameOver = true;
+                return;
+            }
+
+            if (currentRow === MAX_GUESSES - 1) {
+                showMessage(`Game Over! The word was: ${secretWord.toUpperCase()}`);
+                gameOver = true;
+                return;
+            }
+
+            currentRow++;
+            currentTile = 0;
+        }
+
+        function revealRow(rowNum, guess) {
+            const letterCounts = {};
+            // Count letters in secret word to handle duplicate letters correctly
+            for (let char of secretWord) {
+                letterCounts[char] = (letterCounts[char] || 0) + 1;
+            }
+
+            const tileStatuses = Array(WORD_LENGTH).fill("absent");
+
+            // First pass: Find exact matches (Green)
+            for (let i = 0; i < WORD_LENGTH; i++) {
+                if (guess[i] === secretWord[i]) {
+                    tileStatuses[i] = "correct";
+                    letterCounts[guess[i]]--;
+                }
+            }
+
+            // Second pass: Find partial matches (Yellow)
+            for (let i = 0; i < WORD_LENGTH; i++) {
+                if (tileStatuses[i] !== "correct") {
+                    if (secretWord.includes(guess[i]) && letterCounts[guess[i]] > 0) {
+                        tileStatuses[i] = "present";
+                        letterCounts[guess[i]]--;
+                    }
+                }
+            }
+
+            // Apply styles to tiles and keys
+            for (let i = 0; i < WORD_LENGTH; i++) {
+                const tile = document.getElementById(`tile-${rowNum}-${i}`);
+                const status = tileStatuses[i];
+                
+                // Add class delayed slightly for visual effect
+                setTimeout(() => {
+                    tile.classList.add(status);
+                    updateKeyboardKey(guess[i], status);
+                }, i * 100);
+            }
+        }
+
+        function updateKeyboardKey(letter, status) {
+            const keyButton = document.querySelector(`.key[data-key="${letter}"]`);
+            if (!keyButton) return;
+
+            // Don't downgrade a green key to yellow/gray
+            if (keyButton.classList.contains("correct")) return;
+            if (keyButton.classList.contains("present") && status === "absent") return;
+
+            keyButton.classList.remove("present", "absent");
+            keyButton.classList.add(status);
+        }
+
+        function showMessage(msg) {
+            document.getElementById("message").textContent = msg;
+        }
+    </script>
+</body>
+</html>
